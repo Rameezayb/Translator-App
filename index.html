@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Amirhossein Allami" />
+    <meta name="description" content="Next-Gen Language Translator" />
+    <meta name="keywords" content="language translator, translator, AI translation" />
+    <link rel="icon" href="images/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    <link rel="stylesheet" href="style/style.css" />
+    <title>Next-Gen Language Translator</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content container">
+        <h1 class="logo">Translate Ram-Dex</h1>
+        <div class="mode-toggle">
+          <input type="checkbox" class="toggle-checkbox" id="dark-mode-btn" />
+          <label class="switch toggle" for="dark-mode-btn">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <main class="translator-container">
+      <div class="input-section card">
+        <div class="language-selector">
+          <span class="label">From:</span>
+          <div class="dropdown-container" id="input-language">
+            <div class="dropdown-toggle">
+              <ion-icon name="globe-outline"></ion-icon>
+              <span class="selected" data-value="auto">Auto Detect</span>
+              <ion-icon name="chevron-down-outline"></ion-icon>
+            </div>
+            <ul class="dropdown-menu"></ul>
+          </div>
+        </div>
+        <textarea
+          id="input-text"
+          class="text-area"
+          placeholder="Enter text to translate..."
+        ></textarea>
+        <div class="textarea-footer">
+          <div class="char-count">
+            <span id="input-chars">0</span> / 5000
+          </div>
+          <label for="upload-document" class="upload-btn">
+            <span id="upload-title">Upload Document</span>
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <input type="file" id="upload-document" hidden />
+          </label>
+        </div>
+      </div>
+
+      <div class="swap-action">
+        <button class="swap-position" title="Swap Languages (Ctrl+Shift+S)">
+          <ion-icon name="swap-horizontal-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="output-section card">
+        <div class="language-selector">
+          <span class="label">To:</span>
+          <div class="dropdown-container" id="output-language">
+            <div class="dropdown-toggle">
+              <ion-icon name="globe-outline"></ion-icon>
+              <span class="selected" data-value="en">English</span>
+              <ion-icon name="chevron-down-outline"></ion-icon>
+            </div>
+            <ul class="dropdown-menu"></ul>
+          </div>
+        </div>
+        <textarea
+          id="output-text"
+          class="text-area"
+          placeholder="Translation will appear here..."
+          disabled
+        ></textarea>
+        <div class="textarea-footer">
+          <button id="download-btn" class="download-btn" title="Download Translated Text (Ctrl+S)">
+            <span>Download</span>
+            <ion-icon name="cloud-download-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Created by Rameez -
+        <a
+          href="https://github.com/Rameezayb"
+          class="link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub Repository</a
+        >
+      </p>
+    </footer>
+
+    <script src="js/languages.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
