@@ -4,16 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const dropdowns = document.querySelectorAll(".dropdown-container");
   const inputLanguageDropdown = document.querySelector("#input-language");
   const outputLanguageDropdown = document.querySelector("#output-language");
-  const swapBtn = document.querySelector(".swap-position");
-  const inputLanguageSelected = inputLanguageDropdown.querySelector(".selected"); // Renamed for clarity
-  const outputLanguageSelected = outputLanguageDropdown.querySelector(".selected"); // Renamed for clarity
+  const swapBtn = document.querySelector(".swap-btn");
+  const inputLanguageSelected = inputLanguageDropdown.querySelector(".selected");
+  const outputLanguageSelected = outputLanguageDropdown.querySelector(".selected");
   const inputTextElem = document.querySelector("#input-text");
   const outputTextElem = document.querySelector("#output-text");
   const uploadDocument = document.querySelector("#upload-document");
-  const uploadTitle = document.querySelector("#upload-title");
-  const downloadBtn = document.querySelector("#download-btn");
+  const downloadBtn = document.querySelector(".download-btn");
   const darkModeCheckbox = document.getElementById("dark-mode-btn");
   const inputChars = document.querySelector("#input-chars");
+  const copyBtn = document.querySelector(".copy-btn");
 
   // Set focus on the input text area
   inputTextElem.focus();
@@ -192,46 +192,25 @@ document.addEventListener("DOMContentLoaded", () => {
   uploadDocument.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) {
-      uploadTitle.innerHTML = "Upload Document"; // Reset text if no file selected
       return;
     }
-
-    uploadTitle.innerHTML = file.name.length > 20 ? file.name.substring(0, 17) + "..." : file.name; // Truncate long file names
 
     if (file.type === "text/plain") {
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (event) => {
         const content = event.target.result;
-        // Limit to 5000 chars
         inputTextElem.value = content.length > 5000 ? content.slice(0, 5000) : content;
         inputChars.innerHTML = inputTextElem.value.length;
         translate();
+        showNotification("File loaded successfully", "success");
       };
       reader.onerror = () => {
-        alert("Failed to read file.");
-        uploadTitle.innerHTML = "Upload Document";
+        showNotification("Failed to read file", "error");
       };
-    } else if (
-      file.type === "application/pdf" ||
-      file.type === "application/msword" ||
-      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ) {
-      // For PDF/DOCX, actual text extraction is complex on frontend.
-      // This is a placeholder for a more robust backend solution.
-      alert(
-        "For PDF/DOCX files, only plain text content can be processed by this tool. Consider copying and pasting the text directly for best results."
-      );
-      inputTextElem.value = `Note: Advanced document parsing for "${file.name}" is not fully supported in this demo. Please copy and paste text manually for translation.`;
-      inputChars.innerHTML = inputTextElem.value.length;
-      outputTextElem.value = ""; // Clear output until user provides text
     } else {
-      alert("Please upload a valid text file (TXT, PDF, DOC, or DOCX).");
-      uploadTitle.innerHTML = "Upload Document";
-      inputTextElem.value = ""; // Clear input for invalid file types
-      inputChars.innerHTML = "0";
+      showNotification("Please upload a valid text file (TXT only)", "error");
     }
-    // Clear the input to allow selecting the same file again if needed
     e.target.value = '';
   });
 
@@ -239,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   downloadBtn.addEventListener("click", () => {
     const outputText = outputTextElem.value.trim();
     if (!outputText) {
-      alert("There is no translated text to download.");
+      showNotification("No translation to download", "error");
       return;
     }
 
@@ -252,11 +231,71 @@ document.addEventListener("DOMContentLoaded", () => {
     const a = document.createElement("a");
     a.download = filename;
     a.href = url;
-    document.body.appendChild(a); // Append to body to ensure it's in DOM
+    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a); // Clean up
-    URL.revokeObjectURL(url); // Release object URL
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showNotification("Translation downloaded successfully", "success");
   });
+
+  // Copy button functionality
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      const outputText = outputTextElem.value.trim();
+      if (!outputText) {
+        showNotification("No translation to copy", "error");
+        return;
+      }
+
+      navigator.clipboard.writeText(outputText).then(() => {
+        showNotification("Copied to clipboard", "success");
+        // Visual feedback
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon><span>Copied!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+        }, 2000);
+      }).catch(() => {
+        showNotification("Failed to copy", "error");
+      });
+    });
+  }
+
+  // Notification system
+  function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideInUp 0.3s ease-out;
+      max-width: 300px;
+    `;
+
+    if (type === "success") {
+      notification.style.backgroundColor = "var(--success-color)";
+      notification.style.color = "white";
+    } else if (type === "error") {
+      notification.style.backgroundColor = "var(--accent-color)";
+      notification.style.color = "white";
+    } else {
+      notification.style.backgroundColor = "var(--primary-color)";
+      notification.style.color = "white";
+    }
+
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.animation = "slideInDown 0.3s ease-in";
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
+  }
 
   // Dark mode toggle
   darkModeCheckbox.addEventListener("change", () => {
