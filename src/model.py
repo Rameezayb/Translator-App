@@ -10,9 +10,19 @@ class TranslatorAI:
         clean = self.processor.clean_text(raw_text)
         blob = TextBlob(clean)
         
-        # Logic: We use sentiment to validate translation context
+        # Calculate sentiment
         sentiment = blob.sentiment.polarity
-        translation = blob.translate(to=target)
+        
+        # Attempt translation using deep-translator
+        translation = clean
+        try:
+            from deep_translator import GoogleTranslator
+            # Map two-letter language codes to full language names if needed
+            translator = GoogleTranslator(source='auto', target=target)
+            translation = translator.translate(clean)
+        except Exception as e:
+            # Fallback: return cleaned original
+            translation = clean
         
         return {
             "input": clean,

@@ -93,38 +93,50 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const inputLangCode = inputLanguageSelected.dataset.value;
     const outputLangCode = outputLanguageSelected.dataset.value;
-
-    // Don't translate if languages are the same (except for auto-detect)
-    if (inputLangCode === outputLangCode && inputLangCode !== "auto") {
-      outputTextElem.value = inputText;
-      return;
-    }
 
     // Visual indicator that translation is happening
     outputTextElem.value = "Translating...";
 
-    // Construct URL for Google Translate API (public, rate-limited, for demo purposes)
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLangCode}&tl=${outputLangCode}&dt=t&q=${encodeURIComponent(inputText)}`;
+    // Map language codes to target language for backend
+    // The backend uses a two-letter code (e.g., 'fr', 'es', 'de')
+    const targetLanguage = outputLangCode === 'auto' ? 'en' : outputLangCode;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch('http://127.0.0.1:8000/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: inputText,
+          target_language: targetLanguage
+        })
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const json = await response.json();
 
-      if (json && json[0]) {
-        // Concatenate all translated segments
-        const translatedText = json[0].map((item) => item[0]).join("");
-        outputTextElem.value = translatedText;
-      } else {
-        outputTextElem.value = "Translation error: Unexpected API response.";
-      }
+      const result = await response.json();
+
+      // Extract translation and sentiment score from response
+      const translation = result.translation || '';
+      const sentiment = result.sentiment_score !== undefined ? result.sentiment_score.toFixed(2) : 'N/A';
+
+      // Update output textarea with translation
+      outputTextElem.value = translation;
+
+      // Display sentiment score as a comment or additional info
+      console.log(`Translation complete. Sentiment score: ${sentiment}`);
+      
+      // Optional: Show sentiment info in a tooltip or below the textarea
+      showNotification(`Translation complete (Sentiment: ${sentiment})`);
+
     } catch (error) {
       console.error("Translation failed:", error);
-      outputTextElem.value = "Translation failed. Please try again later.";
+      outputTextElem.value = "Translation failed. Ensure the FastAPI server is running at http://127.0.0.1:8000";
+      showNotification("Translation error: " + error.message, true);
     }
   }
 
