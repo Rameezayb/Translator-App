@@ -177,7 +177,7 @@ See `requirements.txt` for complete dependency list.
 ## Contact
 
 **Author**: Rameez  
-**Email**: mrameez512m@gmail.com  
+**Email**: mrameez16dev@gmail.com  
 **GitHub**: [github.com/Rameezayb](https://github.com/Rameezayb)
 
 For questions, suggestions, or collaboration inquiries related to this AI project, please open an issue or contact directly.
