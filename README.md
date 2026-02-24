@@ -48,44 +48,6 @@ This project demonstrates expertise in:
 - **JavaScript (ES6+)**: Async/await, Fetch API, DOM manipulation
 - **Icons**: Ionicons library
 
-### System Design
-
-```
-┌─────────────────────────────────────────────────────┐
-│               Frontend (HTML/CSS/JS)                │
-│  - Input/Output UI with language selectors          │
-│  - Real-time translation requests                   │
-│  - Sentiment score display                          │
-└────────────────────┬────────────────────────────────┘
-                     │ HTTP/JSON (POST /translate)
-                     ▼
-┌─────────────────────────────────────────────────────┐
-│          FastAPI Backend (main.py)                  │
-│  - CORS Middleware for cross-origin requests        │
-│  - Request validation (Pydantic)                    │
-│  - Error handling and logging                       │
-└────────────────────┬────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────┐
-│         TranslatorAI Model (src/model.py)           │
-│  - Preprocessing pipeline                           │
-│  - TextBlob sentiment analysis                      │
-│  - Translation inference                           │
-└────────────────────┬────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────┐
-│      Text Processing (src/preprocessing.py)         │
-│  - Regex-based text cleaning                        │
-│  - Tokenization and normalization                   │
-│  - Feature extraction                               │
-└─────────────────────────────────────────────────────┘
-```
-
----
-
-## AI Component
 
 ### Natural Language Processing Pipeline
 
@@ -109,38 +71,6 @@ The AI component employs a custom NLP pipeline designed for robust text processi
    - **Multi-language Support**: 100+ language pairs
    - **Context Awareness**: Sentiment validation for translation quality
 
-### Model Architecture
-
-```python
-class TranslatorAI:
-    def __init__(self):
-        self.processor = TextProcessor()
-    
-    def run_inference(self, raw_text, target="fr"):
-        # Step 1: Clean and preprocess
-        clean = self.processor.clean_text(raw_text)
-        
-        # Step 2: Analyze sentiment
-        blob = TextBlob(clean)
-        sentiment = blob.sentiment.polarity
-        
-        # Step 3: Translate to target language
-        translation = blob.translate(to=target)
-        
-        # Return structured output
-        return {
-            "input": clean,
-            "translation": str(translation),
-            "sentiment_score": sentiment
-        }
-```
-
-### Performance Characteristics
-- **Latency**: ~200-500ms per request (preprocessing + analysis + translation)
-- **Memory**: ~50MB baseline (TextBlob + NLTK models)
-- **Throughput**: Supports concurrent requests via FastAPI async
-
----
 
 ## Installation
 
@@ -200,10 +130,6 @@ export FASTAPI_HOST=0.0.0.0
 export FASTAPI_PORT=8000
 ```
 
----
-
-## Testing
-
 ### Running the Test Suite
 
 The project includes a comprehensive unittest suite in the `/tests` folder.
@@ -232,33 +158,7 @@ The project includes a comprehensive unittest suite in the `/tests` folder.
    pytest tests/ -v --cov=src --cov-report=html
    ```
 
-### Test Coverage Areas
-- **Preprocessing**: Text cleaning, tokenization, edge cases
-- **Model Inference**: Sentiment analysis accuracy, translation output
-- **API Endpoints**: Request validation, response format, error handling
-- **Integration**: Full pipeline from input to output
 
-### Example Test Run
-```
-test_preprocessing.py:
-  ✓ test_clean_text_removes_special_chars
-  ✓ test_tokenization_splits_correctly
-  ✓ test_empty_string_handling
-
-test_model.py:
-  ✓ test_run_inference_returns_dict
-  ✓ test_sentiment_score_in_range
-  ✓ test_translation_not_empty
-
-test_api.py:
-  ✓ test_translate_endpoint_post
-  ✓ test_cors_headers_present
-  ✓ test_invalid_json_returns_422
-
-Ran 12 tests in 0.543s - OK
-```
-
----
 
 ## Dependencies
 
@@ -273,13 +173,6 @@ Ran 12 tests in 0.543s - OK
 
 See `requirements.txt` for complete dependency list.
 
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
 
 ## Contact
 
@@ -291,128 +184,12 @@ For questions, suggestions, or collaboration inquiries related to this AI projec
 
 ---
 
-## Project Highlights for AI Masters Programs
-
 This project demonstrates:
 - ✅ Custom NLP pipeline design and implementation
 - ✅ Full-stack ML application architecture
 - ✅ REST API design with FastAPI
-- ✅ Production-ready error handling and validation
 - ✅ Comprehensive testing and code documentation
 - ✅ Responsive, user-centered UI design
 - ✅ Scalable, modular Python codebase
 
-**Ideal for**: AI/ML Masters applications, research projects, and professional portfolios.
 
-
-
-
-
-
-
-
-
-📌 Table of Contents
-Overview
-
-Features
-
-Technologies Used
-
-Installation
-
-Usage
-
-Contributing
-
-License
-
-Contact
-
-🧠 Overview
-Translator App Web provides a simple and intuitive interface for translating text between multiple languages. It uses the Google Translate API to deliver fast, accurate translations while ensuring a clean, responsive user experience across all devices.
-
-✨ Features
-🌐 Translate between 100+ languages
-
-⚡ Real-time translation
-
-📱 Mobile-friendly and responsive UI
-
-🧠 Auto language detection
-
-🔠 Character counter
-
-📋 Copy to clipboard
-
-🎯 Lightweight & fast with minimal dependencies
-
-🛠️ Technologies Used
-HTML5
-
-CSS3
-
-JavaScript (ES6+)
-
-Google Cloud Translate API
-
-🚀 Installation
-Clone the repository:
-
-bash
-Copy
-Edit
-git clone https://github.com/Rameezayb/Translator-App.git
-cd Translator-App
-Set up Google Translate API:
-
-Go to the Google Cloud Console
-
-Create a new project (or select an existing one)
-
-Enable the Cloud Translation API
-
-Create credentials (API key)
-
-Replace the API key inside your script.js
-
-🧪 Usage
-Open index.html in your browser
-
-Select the source and target languages
-
-Enter the text to translate
-
-View translated results in real-time
-
-🤝 Contributing
-Contributions are welcome and appreciated!
-
-To contribute:
-
-Fork the repository
-
-Create your feature branch:
-git checkout -b feature/amazing-feature
-
-Commit your changes:
-git commit -m "Add amazing feature"
-
-Push to the branch:
-git push origin feature/amazing-feature
-
-Open a Pull Request
-
-Please open an issue for significant changes or suggestions before you start.
-
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-📬 Contact
-Rameez
-📧 Email: (mrameez512m@gmail.com)
-🔗 GitHub: github.com/Rameezayb
-
-⭐ If you find this project helpful or interesting, don’t forget to star it!#   T r a n s l a t o r - A p p 
- 
- 
